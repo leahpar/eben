@@ -1,0 +1,30 @@
+
+@api = localhost:8030
+
+# ?XDEBUG_SESSION_START=PHPSTORM
+
+### GET / - get the root of the API - Return 200 OK
+GET http://{{api}}/
+Accept: application/json
+
+### GET TEST
+GET http://{{api}}/test
+Accept: application/json
+
+### Charge les tarifs
+GET http://{{api}}/load
+Accept: application/json
+
+### DEBUG
+GET http://{{api}}/tarifs/FOB1
+Accept: application/json
+
+### POST /devis - Create a new devis
+POST http://{{api}}/devis
+Content-Type: application/json
+
+{
+  "type": "FOB1",
+  "hauteur": "666",
+  "largeur": "550"
+}
