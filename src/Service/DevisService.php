@@ -20,7 +20,7 @@ class DevisService
         $montant += $this->getMontantTaille($input, $debug);
 
         // Option pin/chêne
-        if (str_starts_with($input->finition, 'chene')) {
+        if (str_starts_with($input->bois, 'chene')) {
             $montant *= 1.12; // +12%
         }
 
@@ -67,9 +67,9 @@ class DevisService
     {
         $tarifs = $this->sheetTarifLoader->get('Poignees');
 
-        $data = $tarifs[$input->pType] ?? null;
+        $data = $tarifs[$input->poignee] ?? null;
         if ($data === null) {
-            throw new \Exception('Type de poignée invalide');
+            throw new \Exception('Type de poignée invalide (1)');
         }
 
         $montant = $data[$input->pCouleur] ?? null;
@@ -79,7 +79,7 @@ class DevisService
         }
 
         if ($montant < 0) {
-            throw new \Exception('Couleur de poignée invalide');
+            throw new \Exception('Couleur de poignée invalide (2)');
         }
 
         return $montant;
@@ -88,7 +88,15 @@ class DevisService
     public function defauts(string $type)
     {
         $params = $this->sheetTarifLoader->get('Params');
-        return $params[$type];
+        $poignees = $this->sheetTarifLoader->get('Poignees');
+        return [
+            ...$params[$type],
+//            'pCouleurs' => array_map(
+//                fn ($row) => array_keys(array_filter($row, fn ($couleur) => $couleur >= 0)),
+//                $poignees
+//            ),
+            'pCouleurs'=> $poignees,
+        ];
     }
 
 }

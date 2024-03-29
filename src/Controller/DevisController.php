@@ -38,7 +38,7 @@ class DevisController extends AbstractController
         ]);
     }
 
-    #[Route('/tarifs/{type}', name: 'tarifs')]
+    #[Route('/textes', name: 'textes')]
     public function tarif(string $type, SheetTarifLoader $sheetTarifLoader)
     {
         return $this->json([
@@ -46,21 +46,20 @@ class DevisController extends AbstractController
         ]);
     }
 
-    #[Route('/devis', name: 'devis', methods: ['POST'])]
-    public function devis(Request $request, DevisService $devisService, LoggerInterface $logger)
+    #[Route('/defauts', name: 'defauts')]
+    public function defauts(Request $request, DevisService $devisService, LoggerInterface $logger)
     {
         try {
             $debug = [];
+            $logger->debug(print_r($request->toArray(), true));
             $input = new DevisInput($request->toArray());
-            $montant = $devisService->devis($input, $debug);
             $defauts = $devisService->defauts($input->type);
             $response = [
-                'montant' => $montant,
-                'defauts' => $defauts,
-                'debug' => $debug,
+                ...$defauts,
+//                'debug' => $debug,
             ];
 
-            $logger->debug(json_encode($response));
+            $logger->debug(print_r($response, true));
             return $this->json($response);
         }
         catch (\Exception $e) {
@@ -69,5 +68,29 @@ class DevisController extends AbstractController
             ], 400);
         }
     }
+
+    #[Route('/devis', name: 'devis', methods: ['POST'])]
+    public function devis(Request $request, DevisService $devisService, LoggerInterface $logger)
+    {
+        try {
+            $debug = [];
+            $logger->debug(print_r($request->toArray(), true));
+            $input = new DevisInput($request->toArray());
+            $montant = $devisService->devis($input, $debug);
+            $response = [
+                'montant' => $montant,
+//                'debug' => $debug,
+            ];
+
+            $logger->debug(print_r($response, true));
+            return $this->json($response);
+        }
+        catch (\Exception $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
 
 }

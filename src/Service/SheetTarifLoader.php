@@ -127,9 +127,10 @@ class SheetTarifLoader
         $rows = [];
         foreach ($data as $row) {
             $rows[$row[0]] = [
-                'largeur' => (int)preg_replace('/[^0-9-]/', '', $row[1]),
-                'hauteur' => (int)preg_replace('/[^0-9-]/', '', $row[2]),
-                'poignees' => array_filter(array_slice($row, 3)),
+                'largeur'  => (int)preg_replace('/[^0-9-]/', '', $row[1]),
+                'hauteur'  => (int)preg_replace('/[^0-9-]/', '', $row[2]),
+                'bois'     => preg_split('/[\s\n,;]+/', $row[3]),
+                'poignees' => preg_split('/[\s\n,;]+/', $row[4]),
             ];
         }
 

@@ -1,0 +1,252 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+
+<h1 x-data="{ message: 'I ❤️ Alpine' }" x-text="message"></h1>
+
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+<div x-data="init" x-cloak>
+
+    <!-- Tunnel -->
+    <div>
+        <div :class="{'active' : step===1}">
+            <span x-show="step===1">=======></span>
+            1. Type de fenêtres
+        </div>
+        <div :class="{'active' : step===2}">
+            <span x-show="step===2">=======></span>
+            2. Dimensions
+        </div>
+        <div :class="{'active' : step===3}">
+            <span x-show="step===3">=======></span>
+            3. Couleurs & poignée
+        </div>
+        <div :class="{'active' : step===4}">
+            <span x-show="step===4">=======></span>
+            4. je finalise mon projet
+        </div>
+
+        <!-- montant estimé -->
+        <div x-show="step >= 3">
+            Montant estimé : <span x-text="montant"></span> €
+        </div>
+    </div>
+
+    <!-- Message -->
+    <div x-show="message" x-text="message"></div>
+
+    <!-- steps -->
+    <div>
+        <div x-show="step===1">
+            <h1>Type de fenêtre</h1>
+
+            <label><input @change="fetchDefault" x-model="type" type="radio" name="type" value="FOB1">
+                <span x-text="txt('FOB1')"></span>
+            </label>
+            <label><input @change="fetchDefault" x-model="type" type="radio" name="type" value="FOB2">
+                <span x-text="txt('FOB2')"></span>
+            </label>
+            <label><input @change="fetchDefault" x-model="type" type="radio" name="type" value="PF2">
+                <span x-text="txt('PF2')"></span>
+            </label>
+            <label><input @change="fetchDefault" x-model="type" type="radio" name="type" value="PFC2">
+                <span x-text="txt('PFC2')"></span>
+            </label>
+
+            <button @click="step++" :disabled="type===null">Suivant</button>
+        </div>
+
+        <div x-show="step===2">
+            <h1>Dimensions</h1>
+
+            <input @change.debounce.500ms="fetchMontant" x-model="hauteur" type="number" name="hauteur"> hauteur
+            <br>
+            <input @change.debounce.500ms="fetchMontant" x-model="largeur" type="number" name="largeur"> largeur
+
+            <br>
+            <button @click="step--">Retour</button>
+            <button @click="step++" :disabled="montant==0">Suivant</button>
+        </div>
+
+        <div x-show="step===3">
+            <h1>Finitions</h1>
+
+            <h2>Bois</h2>
+
+            <template x-for="b in boisLst">
+                <label>
+                    <input x-model="bois" type="radio" name="bois" @change="fetchMontant" :value="b">
+                    <span x-text="txt(b)"></span>
+                </label>
+            </template>
+
+            <h2>Poignée</h2>
+
+            <template x-for="p in poigneeLst">
+                <label>
+                    <input x-model="poignee" type="radio" name="poignee" @change="fetchMontant" :value="p">
+                    <span x-text="txt(p)"></span>
+                </label>
+            </template>
+
+            <br>
+
+            <template x-for="(p,c) in pCouleurLst[poignee]">
+                <label x-show="p>=0">
+                    <input x-model="pCouleur" type="radio" name="pCouleur" @change="fetchMontant" :value="c">
+                    <span x-text="txt(c)"></span>
+                </label>
+            </template>
+
+            <br>
+            <button @click="step--">Retour</button>
+            <button @click="step++">Suivant</button>
+
+        </div>
+
+        <div x-show="step===4">
+            <h1>Finalisation</h1>
+
+            <table>
+                <tr><th>Type</th><td><span x-text="txt(type)"></span></td></tr>
+                <tr><th>Bois</th><td><span x-text="txt(bois)"></span></td></tr>
+                <tr><th>Hauteur</th><td><span x-text="hauteur"></span> mm</td></tr>
+                <tr><th>Largeur</th><td><span x-text="largeur"></span> mm</td></tr>
+                <tr><th>Poignée</th><td><span x-text="txt(poignee)"></span></td></tr>
+                <tr><th>Couleur</th><td><span x-text="txt(pCouleur)"></span></td></tr>
+                <tr><th>Montant</th><td><span x-text="montant"></span> €</td></tr>
+            </table>
+
+            <button @click="step--">Retour</button>
+    </div>
+
+</div>
+
+<script>
+    //const url = "http://localhost:8030"
+    const url = window.location.origin
+
+    const textes = {
+        'FOB1': 'Fenêtre ouvrante battante 1 vantail',
+        'FOB2': 'Fenêtre ouvrante battante 2 vantaux',
+        'PF2': 'Porte fenêtre 2 vantaux',
+        'PFC2': 'Porte fenêtre coulissante 2 vantaux',
+        //
+        'chene_naturel': 'Chêne naturel',
+        'chene_blond': 'Chêne blond',
+        'pin_blanc': 'Pin blanc',
+        'pin_beige': 'Pin beige',
+        'pin_gris': 'Pin gris',
+        'pin_brun': 'Pin brun',
+        'pin_anthracite': 'Pin anthracite',
+        //
+        'poignee_moderne': 'Poignée moderne',
+        'poignee_coulissant': 'Poignée coulissante',
+        'poignee_bequille': 'Poignée béquille',
+        'bouton_olive': 'Bouton olive',
+        'cremone_bequille': 'Crémone béquille',
+        'cremone_bouton': 'Crémone bouton',
+        //
+        'blanc': 'Blanc',
+        'inox': 'Inox',
+        'noir': 'Noir',
+        'vieux_laiton': 'Vieux laiton',
+        'laiton': 'Laiton',
+        'fer_patine': 'Fer patiné',
+    }
+    function txt(p) {
+        return textes[p]
+    }
+
+    function init() {
+        console.log('init')
+        return {
+            step: 1,
+            type: null,
+            boisLst: [],
+            bois: null,
+            poigneeLst: [],
+            poignee: null,
+            pCouleurLst: [],
+            pCouleur: 'blanc',
+            couleur: null,
+            hauteur: null,
+            largeur: null,
+            montant: null,
+            message: null,
+
+            // async function fetchDefault() {
+            fetchDefault: async function() {
+                console.log('fetchDefault')
+                fetch(url+'/defauts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: this.type,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.hauteur = parseInt(data.hauteur ?? 0)
+                    this.largeur = parseInt(data.largeur ?? 0)
+
+                    this.boisLst = data.bois ?? []
+                    this.bois = this.boisLst[0] ?? null
+
+                    this.poigneeLst = data.poignees ?? []
+                    this.poignee = this.poigneeLst[0] ?? null
+
+                    this.pCouleurLst = data.pCouleurs ?? []
+                    this.pCouleur = this.pCouleurLst[this.poignee][0] ?? null
+
+                    this.message = data.error ?? null
+                })
+                    .then(() => this.fetchMontant())
+            },
+
+            //async function fetchMontant() {
+            fetchMontant: async function() {
+                console.log('fetchMontant')
+
+                // Check couleur poignée
+                const p = this.pCouleurLst[this.poignee][this.pCouleur]??null;
+                if (p === null || p < 0) {
+                    this.pCouleur = Object.keys(this.pCouleurLst[this.poignee])[0];
+                }
+
+                fetch(url+'/devis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type:     this.type,
+                        bois:     this.bois,
+                        hauteur:  this.hauteur,
+                        largeur:  this.largeur,
+                        poignee:  this.poignee,
+                        pCouleur: this.pCouleur,
+                        couleur:  this.couleur,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.montant = parseInt(data.montant ?? 0)
+                    this.message = data.error ?? null
+                })
+            }
+        }
+    }
+
+</script>
+
+</body>
+</html>

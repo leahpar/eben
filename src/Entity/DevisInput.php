@@ -21,16 +21,16 @@ class DevisInput
     public ?int $largeur = null;
 
     /**
-     * Finition fenêtre
+     * Bois fenêtre
      * pin blanc, pin beige, chêne naturel... (en slug)
      */
-    public ?string $finition = null;
+    public ?string $bois = null;
 
     /**
      * Type de poignée :
      * Moderne, Bouton olive...
      */
-    public ?string $pType = null;
+    public ?string $poignee = null;
 
     /**
      * Couleur de poignée :
