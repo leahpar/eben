@@ -1,0 +1,541 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/css/main.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="antialiased bg-soapstone-50 text-space-950">
+
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+<!-- TODO:
+- Design du message
+- Design des boutons disabled
+-->
+
+<div x-data="data" x-init="init"  x-cloak>
+
+<section class="py-8">
+
+    <div class="container mx-auto max-w-5xl">
+
+        <h1 class="bg-space-950 p-6 text-3xl text-white font-serif text-center">Estimez votre devis de fenêtre bois-aluminium en 3 clics !</h1>
+
+        <!-- tunnel -->
+        <div class="relative bg-space-100 p-6 flex justify-center text-sm">
+            <div class="flex flex-col items-center gap-2">
+                <div class=""
+                    :class="{
+                    'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step>1,
+                    'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===1,
+                    'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step<1
+                    }">
+                    1
+                </div>
+                <p><strong>Type de fenêtres</strong></p>
+            </div>
+            <div class="flex items-center before:w-28 before:border-t before:border-space-200 before:relative before:-top-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class=""
+                        :class="{
+                        'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full' : step>2,
+                        'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===2,
+                        'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step<2
+                        }">
+                        2
+                    </div>
+                    <p><strong>Dimensions</strong></p>
+                </div>
+            </div>
+            <div class="flex items-center before:w-28 before:border-t before:border-space-200 before:relative before:-top-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class=""
+                        :class="{
+                        'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step>3,
+                        'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===3,
+                        'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full' :   step<3
+                        }">
+                        3
+                    </div>
+                    <p><strong>Couleurs & poignée</strong></p>
+                </div>
+            </div>
+            <div class="flex items-center before:w-28 before:border-t before:border-space-200 before:relative before:-top-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class=""
+                        :class="{
+                        'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step>4,
+                        'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===4,
+                        'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step<4
+                        }">
+                        4
+                    </div>
+                    <p><strong>Je finalise mon projet</strong></p>
+                </div>
+            </div>
+
+            <div x-show="step>=2"
+                 class="absolute -right-16 -bottom-16 bg-space-950 w-40 aspect-square rounded-full flex justify-center items-center border-8 border-soapstone-50 p-3 text-white text-center">
+                <p x-show="step===2" class="text-xl text-white text-center font-bold">Votre Prix<br>à l'étape<br>suivante !</p>
+                <p x-show="step>2">Montant estimé :<br><strong class="text-xl"><span x-text="montantStr"></span> TTC</strong><br>pose incluse</p>
+            </div>
+
+        </div>
+
+        <!-- Message -->
+        <div x-show="message" x-text="message"></div>
+
+        <!-- step 1 -->
+        <div x-show="step===1" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je choisis mon type de fenêtres</h2>
+
+            <div class="grid lg:grid-cols-3 gap-4 text-center">
+
+                <div class="bg-white rounded-xl p-6">
+                    <p><strong>Fenêtre</strong></p>
+                    <p class="text-sm">Ouverture à la française et oscillo-battante</p>
+
+                    <div class="flex justify-around mt-8">
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="fob1" value="FOB1" class="hidden">
+                                <label for="fob1" class="flex flex-col items-center gap-3">
+                                <img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/fob1.png" alt="Fenêtre oscillo-battante 1 battant" loading="lazy" class="h-24">
+                                <p>1 battant</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="fob2" value="FOB2" class="hidden">
+                            <label for="fob2" class="flex flex-col items-center gap-3">
+                                <img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/fob2.png" alt="Fenêtre oscillo-battante 2 battants" loading="lazy" class="h-24">
+                                <p>2 battants</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-xl p-6">
+                    <p><strong>Porte-fenêtre</strong></p>
+                    <p class="text-sm">Ouverture à la française uniquement</p>
+
+                    <div class="flex justify-around mt-8">
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="pf2" value="PF2" class="hidden">
+                            <label for="pf2" class="flex flex-col items-center gap-3">
+                                <img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/pf2.png" alt="Porte-fenêtre 2 battants" loading="lazy" class="h-24">
+                                <p>2 battants</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-xl p-6">
+                    <p><strong>Baie coulissante</strong></p>
+                    <p class="text-sm">Ouverture coulissante</p>
+
+                    <div class="flex justify-around mt-8">
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="pfc2" value="PFC2" class="hidden">
+                            <label for="pfc2" class="flex flex-col items-center gap-3">
+                                <img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/bc2.png" alt="Baie coulissante 2 vantaux" loading="lazy" class="h-24">
+                                <p>2 à 4 vantaux</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-end">
+                <button @click="step++"
+                        :disabled="type===null"
+                        title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">Étape suivante
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"></path>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- step 2 -->
+        <div x-show="step===2" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je renseigne les dimensions de ma fenêtre</h2>
+
+            <div class="bg-white rounded-xl p-10 max-w-2xl mx-auto flex flex-col lg:flex-row justify-between gap-10 items-center">
+                <div class="space-y-2">
+                    <div class="flex justify-between gap-6 items-center border rounded-lg p-2 px-3 border-space-100">
+                        <div>
+                            <p><strong>Hauteur</strong></p>
+                            <p class="text-sm text-space-950/40">entre <span x-text="hauteur_min"></span> et <span x-text="hauteur_max"></span> mm</p><!-- TODO -->
+                        </div>
+                        <div class="flex items-center bg-space-50 rounded py-1 px-2">
+                            <input x-model="hauteur"
+                                   @change.debounce.500ms="fetchMontant"
+                                   class="w-16 bg-transparent text-right"
+                                   type="number"
+                                   name="hauteur">
+                            <p class="text-sm">mm</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between gap-6 items-center border rounded-lg p-2 px-3 border-space-100">
+                        <div>
+                            <p><strong>Largeur</strong></p>
+                            <p class="text-sm text-space-950/40">entre 392 et 1600 mm</p><!-- TODO -->
+                        </div>
+                        <div class="flex items-center bg-space-50 rounded py-1 px-2">
+                            <input x-model="largeur"
+                                   @change.debounce.500ms="fetchMontant"
+                                   class="w-16 bg-transparent text-right"
+                                   type="number"
+                                   name="largeur">
+                            <p class="text-sm">mm</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/dimensions.png" alt="Dimensions de votre fenêtre sur-mesure" loading="lazy">
+                </div>
+            </div>
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+                    <button @click="step++"
+                            :disabled="montant===0"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">Étape suivante
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"></path>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- step 3 -->
+        <div x-show="step===3" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je choisis les finitions de ma fenêtre</h2>
+
+            <div class="bg-white rounded-xl p-2 max-w-5xl mx-auto">
+
+                <h3 class="bg-soapstone-50 p-2 text-center uppercase font-bold text-lg rounded">La finition intérieure</h3>
+
+                <div class="grid grid-cols-4">
+
+                    <div class="relative">
+                        <!-- fond -->
+                        <img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/spacer.png"
+                             alt="Fenêtre bois-alu en pin sur-mesure">
+                        <!-- fenetre -->
+                        <img :src="url+'/img/windows/'+bois+'_int.png'"
+                             alt="Fenêtre bois-alu en pin sur-mesure"
+                             class="absolute top-0 left-0 z-10">
+                        <!-- poignee -->
+                        <img :src="url+'/img/handles-zoom/'+poignee+'_'+pCouleur+'.png'"
+                             alt="Poignée moderne fenêtre sur-mesure"
+                             class="absolute top-0 left-0 z-20">
+                    </div>
+
+                    <div class="col-span-3">
+                        <p class="uppercase">La finition bois</p>
+
+                        <div class="flex justify-center gap-3 text-sm">
+                            <template x-for="b in boisLst">
+                                <div>
+                                    <input x-model="bois" type="radio" name="bois" @change="fetchMontant" :value="b" :id="b">
+                                    <label :for="b" class="flex flex-col gap-2 items-center w-20 border border-space-50 rounded-lg hover:border-serria-400 p-2">
+                                        <img :src="url+'/img/colors/'+b+'_90.png'"
+                                             :alt="txt(b)"
+                                             class="w-16 aspect-square rounded-full object-cover">
+                                        <p class="text-center" x-text="txt(b)"></p>
+                                    </label>
+                                </div>
+                            </template>
+                        </div>
+
+                        <p class="uppercase">Les poignées</p>
+
+                        <div class="flex justify-center gap-3 text-sm">
+                            <template x-for="p in poigneeLst">
+                                <div>
+                                    <input x-model="poignee" type="radio" name="poignee" @change="fetchMontant" :value="p" :id="p">
+                                    <label :for="p" class="flex flex-col gap-2 items-center w-20 border border-space-50 rounded-lg hover:border-serria-400 p-2">
+                                        <img :src="url+'/img/handles-category/'+p+'_blanc_mobile.png'"
+                                             :alt="txt(p)"
+                                             class="w-16 aspect-square rounded-full object-cover">
+                                        <p class="text-center" x-text="txt(p)"></p>
+                                    </label>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="flex justify-center gap-3 text-sm">
+                            <template x-for="(p,c) in pCouleurLst[poignee]">
+                                <div x-show="p>=0">
+                                    <input x-model="pCouleur" type="radio" name="pCouleur" @change="fetchMontant" :value="c" :id="c">
+                                    <label :for="c">
+                                        <img :src="url+'/img/handles-colors/'+c+'.png'"
+                                             :alt="txt(c)"
+                                             class="w-16 aspect-square rounded-full object-cover">
+                                        <p class="text-center" x-text="txt(c)"></p>
+                                    </label>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+                    <button @click="step++"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">
+                        Étape suivante
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- step 4 -->
+        <div x-show="step===4" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je finalise mon projet</h2>
+
+            <div class="bg-white rounded-xl p-10 max-w-2xl mx-auto flex flex-col lg:flex-row justify-between gap-10 items-center">
+                <table>
+                    <tr><th>Type</th><td><span x-text="txt(type)"></span></td></tr>
+                    <tr><th>Bois</th><td><span x-text="txt(bois)"></span></td></tr>
+                    <tr><th>Hauteur</th><td><span x-text="hauteur"></span> mm</td></tr>
+                    <tr><th>Largeur</th><td><span x-text="largeur"></span> mm</td></tr>
+                    <tr><th>Poignée</th><td><span x-text="txt(poignee)"></span></td></tr>
+                    <tr><th>Couleur</th><td><span x-text="txt(pCouleur)"></span></td></tr>
+                    <tr><th>Montant</th><td><span x-text="montant"></span> €</td></tr>
+                </table>
+
+            </div>
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+<script>
+    //const url = "http://localhost:8030"
+    const url = window.location.origin
+
+    const textes = {
+        'FOB1': 'Fenêtre ouvrante battante 1 vantail',
+        'FOB2': 'Fenêtre ouvrante battante 2 vantaux',
+        'PF2': 'Porte fenêtre 2 vantaux',
+        'PFC2': 'Porte fenêtre coulissante 2 vantaux',
+        //
+        'chene_naturel': 'Chêne naturel',
+        'chene_blond': 'Chêne blond',
+        'pin_blanc': 'Pin blanc',
+        'pin_beige': 'Pin beige',
+        'pin_gris': 'Pin gris',
+        'pin_brun': 'Pin brun',
+        'pin_anthracite': 'Pin anthracite',
+        //
+        'poignee_moderne': 'Poignée moderne',
+        'poignee_coulissant': 'Poignée coulissante',
+        'poignee_bequille': 'Poignée béquille',
+        'bouton_olive': 'Bouton olive',
+        'cremone_bequille': 'Crémone béquille',
+        'cremone_bouton': 'Crémone bouton',
+        //
+        'blanc': 'Blanc',
+        'inox': 'Inox',
+        'noir': 'Noir',
+        'vieux_laiton': 'Vieux laiton',
+        'laiton': 'Laiton',
+        'fer_patine': 'Fer patiné',
+    }
+    function txt(p) {
+        return textes[p]
+    }
+
+    async function init() {
+        console.log('init')
+        console.log('fetchMessages')
+        fetch(url+'/messages')
+        .then(response => response.json())
+        .then(data => {
+            this.messages = data.messages
+            console.log(this.messages)
+        })
+    }
+
+    function data() {
+        console.log('data')
+        return {
+            step: 1,
+            type: null,
+            boisLst: [],
+            bois: 'pin_blanc',
+            poigneeLst: [],
+            poignee: 'poignee_moderne',
+            pCouleurLst: [],
+            pCouleur: 'blanc',
+            couleur: null,
+            hauteur: null,
+            hauteur_min: null,
+            hauteur_max: null,
+            largeur: null,
+            largeur_min: null,
+            largeur_max: null,
+            montantStr: null,
+            montant: 0,
+            message: null,
+            messages: [],
+
+            // async function fetchDefault() {
+            fetchDefault: async function() {
+                console.log('fetchDefault')
+                fetch(url+'/defauts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: this.type,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.hauteur = parseInt(data.hauteur ?? 0)
+                    this.hauteur_min = parseInt(data.hauteur_min ?? 0)
+                    this.hauteur_max = parseInt(data.hauteur_max ?? 0)
+                    this.largeur = parseInt(data.largeur ?? 0)
+                    this.largeur_min = parseInt(data.largeur_min ?? 0)
+                    this.largeur_max = parseInt(data.largeur_max ?? 0)
+
+                    this.boisLst = data.bois ?? []
+                    this.bois = this.boisLst[0] ?? null
+
+                    this.poigneeLst = data.poignees ?? []
+                    this.poignee = this.poigneeLst[0] ?? null
+
+                    this.pCouleurLst = data.pCouleurs ?? []
+                    this.pCouleur = this.pCouleurLst[this.poignee][0] ?? null
+
+                    this.message = data.error ?? null
+                })
+                    .then(() => this.fetchMontant())
+            },
+
+            //async function fetchMontant() {
+            fetchMontant: async function() {
+                console.log('fetchMontant')
+
+                // Check couleur poignée
+                const p = this.pCouleurLst[this.poignee][this.pCouleur]??null;
+                if (p === null || p < 0) {
+                    this.pCouleur = Object.keys(this.pCouleurLst[this.poignee])[0];
+                }
+
+                fetch(url+'/devis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type:     this.type,
+                        bois:     this.bois,
+                        hauteur:  this.hauteur,
+                        largeur:  this.largeur,
+                        poignee:  this.poignee,
+                        pCouleur: this.pCouleur,
+                        couleur:  this.couleur,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    //this.montant = parseInt(data.montant ?? 0)
+                    this.montant = parseInt(data.montant ?? 0)
+                    this.montantStr = parseInt(data.montant ?? 0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+                    this.message = data.error ?? null
+                })
+            }
+        }
+    }
+
+</script>
+
+</body>
+</html>

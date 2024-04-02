@@ -38,11 +38,11 @@ class DevisController extends AbstractController
         ]);
     }
 
-    #[Route('/textes', name: 'textes')]
-    public function tarif(string $type, SheetTarifLoader $sheetTarifLoader)
+    #[Route('/messages', name: 'messages')]
+    public function messages(SheetTarifLoader $sheetTarifLoader)
     {
         return $this->json([
-            'tarif' => $sheetTarifLoader->get($type),
+            'messages' => $sheetTarifLoader->get('Messages'),
         ]);
     }
 
@@ -74,7 +74,7 @@ class DevisController extends AbstractController
     {
         try {
             $debug = [];
-            $logger->debug(print_r($request->toArray(), true));
+//            $logger->debug(print_r($request->toArray(), true));
             $input = new DevisInput($request->toArray());
             $montant = $devisService->devis($input, $debug);
             $response = [

@@ -38,7 +38,7 @@ class SheetTarifLoader
             'PF2'  => $this->load_price_array('PF2'),
             'PFC2' => $this->load_price_array('PFC2'),
             'Poignees' => $this->load_price_array('Poignees', false),
-            'messages' => $this->load_messages(),
+            'Messages' => $this->load_messages(),
         ];
         $this->cache->warmUp($data);
     }
@@ -144,7 +144,7 @@ class SheetTarifLoader
 
     public function getMessage(string $code): string
     {
-        $messages = $this->cache->getItem('messages')->get();
+        $messages = $this->cache->getItem('Messages')->get();
         foreach ($messages as $c => $message) {
             if ($c == $code) return $message;
         }

@@ -87,10 +87,36 @@ class DevisService
 
     public function defauts(string $type)
     {
+        // Valeurs par défaut
         $params = $this->sheetTarifLoader->get('Params');
+
+        // Min/max
+        $tarifs = $this->sheetTarifLoader->get($type);
+        $hMin = 99999999;
+        $hMax = 0;
+        $lMin = 99999999;
+        $lMax = 0;
+
+        foreach ($tarifs as $key => $value) {
+            $t = array_filter($value, fn($x) => $x>0);
+            if (count($t) > 0) {
+                // S'il y a des tarifs pour cette hauteur
+                $hMin = min($hMin, $key);
+                $hMax = max($hMax, $key);
+                $lMin = min($lMin, min($t));
+                $lMax = max($lMax, max($t));
+            }
+        }
+
+        // Poignées
         $poignees = $this->sheetTarifLoader->get('Poignees');
+
         return [
             ...$params[$type],
+            'hauteur_min' => $hMin,
+            'hauteur_max' => $hMax,
+            'largeur_min' => $lMin,
+            'largeur_max' => $lMax,
 //            'pCouleurs' => array_map(
 //                fn ($row) => array_keys(array_filter($row, fn ($couleur) => $couleur >= 0)),
 //                $poignees
