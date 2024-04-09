@@ -7,7 +7,9 @@ use App\Service\DevisService;
 use App\Service\SheetTarifLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class DevisController extends AbstractController
@@ -22,8 +24,20 @@ class DevisController extends AbstractController
     }
 
     #[Route('/load', name: 'load')]
-    public function load(SheetTarifLoader $sheetTarifLoader)
-    {
+    public function load(
+        Request $request,
+        SheetTarifLoader $sheetTarifLoader,
+        #[Autowire('%env(ADMIN_PW)%')]
+        #[\SensitiveParameter]
+        $adminPw
+    ) {
+        // Basic HTTP authentication
+        if ($request->headers->get('php-auth-user') !== 'admin'
+           || $request->headers->get('php-auth-pw') !== $adminPw
+           || !$adminPw) {
+            return new Response('Unauthorized', 401, ['WWW-Authenticate' => 'Basic realm="Admin"']);
+        }
+
         $sheetTarifLoader->load();
         return $this->json([
             'load' => 'ok',
