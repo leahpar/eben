@@ -127,10 +127,11 @@ class SheetTarifLoader
         $rows = [];
         foreach ($data as $row) {
             $rows[$row[0]] = [
-                'largeur'  => (int)preg_replace('/[^0-9-]/', '', $row[1]),
-                'hauteur'  => (int)preg_replace('/[^0-9-]/', '', $row[2]),
-                'bois'     => preg_split('/[\s\n,;]+/', $row[3]),
-                'poignees' => preg_split('/[\s\n,;]+/', $row[4]),
+                'largeur'       => (int)preg_replace('/[^0-9-]/', '', $row[1]),
+                'hauteur'       => (int)preg_replace('/[^0-9-]/', '', $row[2]),
+                'bois'          => preg_split('/[\s\n,;]+/', $row[3]),
+                'poigneesLst'   => preg_split('/[\s\n,;]+/', $row[4]),
+                'couleurExtLst' => preg_split('/[\s\n,;]+/', $row[5]),
             ];
         }
 
@@ -150,58 +151,5 @@ class SheetTarifLoader
         }
         return "ERREUR";
     }
-
-//    public function persist(Mariage $mariage): void
-//    {
-//        $row = EntityMapping::createDataRowFromMariage($mariage);
-//
-//        $body = new \Google_Service_Sheets_ValueRange();
-//        $body->setValues([$row]);
-//
-//        $range = 'Base Photos'; // the service will detect the last row of this sheet
-//
-//        $options = ['valueInputOption' => 'USER_ENTERED'];
-//
-//        $service = $this->googleApiService->getService('sheets');
-//        $service->spreadsheets_values->append(
-//            $this->spreadsheetId,
-//            $range,
-//            $body,
-//            $options
-//        );
-//    }
-//
-//    public function getAll(?string $filter = null, ?string $search = null, ?int $page = 1, ?int $limit = 24): array
-//    {
-//        $page = $page < 1 ? 1 : $page;
-//        $from = ($page-1) * $limit;
-//        $to = $from + $limit;
-//
-//        $cpt = 0;
-//        $mariages = [];
-//        $keys = $this->cache->getItem('keys')->get();
-//
-//        if ($limit == 0) {
-//            $from = 0;
-//            $to = count($keys);
-//        }
-//
-//        foreach ($keys as $key) {
-//            $mariage = $this->get($key);
-//            if (($mariage->isInFilter($filter))
-//             && $mariage->isSearch($search)
-//            ) {
-//                if ($cpt++ <= $from) continue;
-//                if ($cpt > $to+1) continue;
-//                $mariages[] = $mariage;
-//            }
-//        }
-//
-//        return [
-//            'mariages' => $mariages,
-//            'page' => $page,
-//            'count' => $cpt,
-//        ];
-//    }
 
 }

@@ -72,7 +72,7 @@ class DevisService
             throw new \Exception('Type de poignée invalide (1)');
         }
 
-        $montant = $data[$input->pCouleur] ?? null;
+        $montant = $data[$input->couleurPoignee] ?? null;
         $debug['montant_poignee'] = $montant;
         if ($montant === null) {
             throw new \Exception('Type de poignée invalide');
@@ -117,12 +117,11 @@ class DevisService
             'hauteur_max' => $hMax,
             'largeur_min' => $lMin,
             'largeur_max' => $lMax,
-//            'pCouleurs' => array_map(
-//                fn ($row) => array_keys(array_filter($row, fn ($couleur) => $couleur >= 0)),
-//                $poignees
-//            ),
-            'pCouleurs'=> $poignees,
+            'couleurPoigneeLst'=> $poignees,
         ];
+
+
+
     }
 
 }

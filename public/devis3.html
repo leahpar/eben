@@ -273,7 +273,7 @@
                              alt="Fenêtre bois-alu en pin sur-mesure"
                              class="absolute top-0 left-0 z-10">
                         <!-- poignee -->
-                        <img :src="url+'/img/handles-zoom/'+poignee+'_'+pCouleur+'.png'"
+                        <img :src="url+'/img/handles-zoom/'+poignee+'_'+couleurPoignee+'.png'"
                              alt="Poignée moderne fenêtre sur-mesure"
                              class="absolute top-0 left-0 z-20">
                     </div>
@@ -287,9 +287,9 @@
                                     <input x-model="bois" type="radio" name="bois" @change="fetchMontant" :value="b" :id="b">
                                     <label :for="b" class="flex flex-col gap-2 items-center w-20 border border-space-50 rounded-lg hover:border-serria-400 p-2">
                                         <img :src="url+'/img/colors/'+b+'_90.png'"
-                                             :alt="txt(b)"
+                                             :alt="texte(b)"
                                              class="w-16 aspect-square rounded-full object-cover">
-                                        <p class="text-center" x-text="txt(b)"></p>
+                                        <p class="text-center" x-text="texte(b)"></p>
                                     </label>
                                 </div>
                             </template>
@@ -303,23 +303,42 @@
                                     <input x-model="poignee" type="radio" name="poignee" @change="fetchMontant" :value="p" :id="p">
                                     <label :for="p" class="flex flex-col gap-2 items-center w-20 border border-space-50 rounded-lg hover:border-serria-400 p-2">
                                         <img :src="url+'/img/handles-category/'+p+'_blanc_mobile.png'"
-                                             :alt="txt(p)"
+                                             :alt="texte(p)"
                                              class="w-16 aspect-square rounded-full object-cover">
-                                        <p class="text-center" x-text="txt(p)"></p>
+                                        <p class="text-center" x-text="texte(p)"></p>
                                     </label>
                                 </div>
                             </template>
                         </div>
 
                         <div class="flex justify-center gap-3 text-sm">
-                            <template x-for="(p,c) in pCouleurLst[poignee]">
+                            <template x-for="(p,c) in couleurPoigneeLst[poignee]">
                                 <div x-show="p>=0">
-                                    <input x-model="pCouleur" type="radio" name="pCouleur" @change="fetchMontant" :value="c" :id="c">
+                                    <input x-model="couleurPoignee" type="radio" name="couleurPoignee" @change="fetchMontant" :value="c" :id="c">
                                     <label :for="c">
                                         <img :src="url+'/img/handles-colors/'+c+'.png'"
-                                             :alt="txt(c)"
+                                             :alt="texte(c)"
                                              class="w-16 aspect-square rounded-full object-cover">
-                                        <p class="text-center" x-text="txt(c)"></p>
+                                        <p class="text-center" x-text="texte(c)"></p>
+                                    </label>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- fenetre ext -->
+                        <img :src="url+'/img/windows/'+couleurExt+'_ext.png'"
+                             alt="Fenêtre bois-alu en pin sur-mesure"
+                             class="absolute top-0 left-0 z-10">
+
+                        <div class="flex justify-center gap-3 text-sm">
+                            <template x-for="c in couleurExtLst">
+                                <div>
+                                    <input x-model="couleurExt" type="radio" name="couleurExt" :value="c" :id="c">
+                                    <label :for="c">
+                                        <img :src="url+'/img/colors/'+c+'_90.png'"
+                                             :alt="texte(c)"
+                                             class="w-16 aspect-square rounded-full object-cover">
+                                        <p class="text-center" x-text="texte(c)"></p>
                                     </label>
                                 </div>
                             </template>
@@ -360,12 +379,12 @@
 
             <div class="bg-white rounded-xl p-10 max-w-2xl mx-auto flex flex-col lg:flex-row justify-between gap-10 items-center">
                 <table>
-                    <tr><th>Type</th><td><span x-text="txt(type)"></span></td></tr>
-                    <tr><th>Bois</th><td><span x-text="txt(bois)"></span></td></tr>
+                    <tr><th>Type</th><td><span x-text="texte(type)"></span></td></tr>
+                    <tr><th>Bois</th><td><span x-text="texte(bois)"></span></td></tr>
                     <tr><th>Hauteur</th><td><span x-text="hauteur"></span> mm</td></tr>
                     <tr><th>Largeur</th><td><span x-text="largeur"></span> mm</td></tr>
-                    <tr><th>Poignée</th><td><span x-text="txt(poignee)"></span></td></tr>
-                    <tr><th>Couleur</th><td><span x-text="txt(pCouleur)"></span></td></tr>
+                    <tr><th>Poignée</th><td><span x-text="texte(poignee)"></span></td></tr>
+                    <tr><th>Couleur</th><td><span x-text="texte(couleurPoignee)"></span></td></tr>
                     <tr><th>Montant</th><td><span x-text="montant"></span> €</td></tr>
                 </table>
 
@@ -395,40 +414,9 @@
 </div>
 
 <script>
-    //const url = "http://localhost:8030"
-    const url = window.location.origin
-
-    const textes = {
-        'FOB1': 'Fenêtre ouvrante battante 1 vantail',
-        'FOB2': 'Fenêtre ouvrante battante 2 vantaux',
-        'PF2': 'Porte fenêtre 2 vantaux',
-        'PFC2': 'Porte fenêtre coulissante 2 vantaux',
-        //
-        'chene_naturel': 'Chêne naturel',
-        'chene_blond': 'Chêne blond',
-        'pin_blanc': 'Pin blanc',
-        'pin_beige': 'Pin beige',
-        'pin_gris': 'Pin gris',
-        'pin_brun': 'Pin brun',
-        'pin_anthracite': 'Pin anthracite',
-        //
-        'poignee_moderne': 'Poignée moderne',
-        'poignee_coulissant': 'Poignée coulissante',
-        'poignee_bequille': 'Poignée béquille',
-        'bouton_olive': 'Bouton olive',
-        'cremone_bequille': 'Crémone béquille',
-        'cremone_bouton': 'Crémone bouton',
-        //
-        'blanc': 'Blanc',
-        'inox': 'Inox',
-        'noir': 'Noir',
-        'vieux_laiton': 'Vieux laiton',
-        'laiton': 'Laiton',
-        'fer_patine': 'Fer patiné',
-    }
-    function txt(p) {
-        return textes[p]
-    }
+    const url = "http://localhost:8030"
+    //const url = window.location.origin
+    // const url = "http://api.fenetre-eben.fr"
 
     async function init() {
         console.log('init')
@@ -450,9 +438,10 @@
             bois: 'pin_blanc',
             poigneeLst: [],
             poignee: 'poignee_moderne',
-            pCouleurLst: [],
-            pCouleur: 'blanc',
-            couleur: null,
+            couleurPoigneeLst: [],
+            couleurPoignee: 'blanc',
+            couleurExtLst: [],
+            couleurExt: null,
             hauteur: null,
             hauteur_min: null,
             hauteur_max: null,
@@ -488,11 +477,14 @@
                     this.boisLst = data.bois ?? []
                     this.bois = this.boisLst[0] ?? null
 
-                    this.poigneeLst = data.poignees ?? []
+                    this.poigneeLst = data.poigneesLst ?? []
                     this.poignee = this.poigneeLst[0] ?? null
 
-                    this.pCouleurLst = data.pCouleurs ?? []
-                    this.pCouleur = this.pCouleurLst[this.poignee][0] ?? null
+                    this.couleurPoigneeLst = data.couleurPoigneeLst ?? []
+                    this.couleurPoignee = this.couleurPoigneeLst[this.poignee][0] ?? null
+
+                    this.couleurExtLst = data.couleurExtLst ?? []
+                    this.couleurExt = this.couleurExtLst[0] ?? null
 
                     this.message = data.error ?? null
                 })
@@ -504,9 +496,9 @@
                 console.log('fetchMontant')
 
                 // Check couleur poignée
-                const p = this.pCouleurLst[this.poignee][this.pCouleur]??null;
+                const p = this.couleurPoigneeLst[this.poignee][this.couleurPoignee]??null;
                 if (p === null || p < 0) {
-                    this.pCouleur = Object.keys(this.pCouleurLst[this.poignee])[0];
+                    this.couleurPoignee = Object.keys(this.couleurPoigneeLst[this.poignee])[0];
                 }
 
                 fetch(url+'/devis', {
@@ -515,22 +507,27 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        type:     this.type,
-                        bois:     this.bois,
-                        hauteur:  this.hauteur,
-                        largeur:  this.largeur,
-                        poignee:  this.poignee,
-                        pCouleur: this.pCouleur,
-                        couleur:  this.couleur,
+                        type:        this.type,
+                        bois:        this.bois,
+                        hauteur:     this.hauteur,
+                        largeur:     this.largeur,
+                        poignee:     this.poignee,
+                        couleurPoignee: this.couleurPoignee,
+                        couleurExt:  this.couleurExt,
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     //this.montant = parseInt(data.montant ?? 0)
                     this.montant = parseInt(data.montant ?? 0)
-                    this.montantStr = parseInt(data.montant ?? 0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+                    this.montantStr = parseInt(data.montant ?? 0)
+                        .toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
                     this.message = data.error ?? null
                 })
+            },
+            
+            texte: function(slug) {
+                return this.messages[slug] ?? slug
             }
         }
     }

@@ -36,12 +36,12 @@ class DevisInput
      * Couleur de poignée :
      * blanc, noir, laiton...
      */
-    public ?string $pCouleur = null;
+    public ?string $couleurPoignee = null;
 
     /**
      * Couleur alu extérieur
      */
-    public ?string $couleur = null;
+    public ?string $couleurExt = null;
 
 
     public function __construct(?array $data = [])
