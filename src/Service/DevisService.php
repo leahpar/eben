@@ -103,8 +103,8 @@ class DevisService
                 // S'il y a des tarifs pour cette hauteur
                 $hMin = min($hMin, $key);
                 $hMax = max($hMax, $key);
-                $lMin = min($lMin, min($t));
-                $lMax = max($lMax, max($t));
+                $lMin = min($lMin, min(array_keys($t)));
+                $lMax = max($lMax, max(array_keys($t)));
             }
         }
 

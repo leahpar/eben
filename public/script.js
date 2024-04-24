@@ -1,18 +1,17 @@
 const url = new URL(document.currentScript.src).origin
 
 async function init() {
-    console.log('init')
-    console.log('fetchMessages')
+    //console.log('init')
+    //console.log('fetchMessages')
     fetch(url+'/messages')
         .then(response => response.json())
         .then(data => {
             this.messages = data.messages
-            console.log(this.messages)
         })
 }
 
 function data() {
-    console.log('data')
+    //console.log('data')
     return {
         step: 1,
         type: null,
@@ -37,7 +36,7 @@ function data() {
 
         // async function fetchDefault() {
         fetchDefault: async function() {
-            console.log('fetchDefault')
+            //console.log('fetchDefault')
             fetch(url+'/defauts', {
                 method: 'POST',
                 headers: {
@@ -75,7 +74,7 @@ function data() {
 
         //async function fetchMontant() {
         fetchMontant: async function() {
-            console.log('fetchMontant')
+            //console.log('fetchMontant')
 
             // Check couleur poignée
             const p = this.couleurPoigneeLst[this.poignee][this.couleurPoignee]??null;

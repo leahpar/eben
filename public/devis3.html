@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/css/main.css">
 
+<!--    <script defer src="http://api.fenetre-eben.fr/script.js"></script>-->
     <script defer src="http://localhost:8030/script.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -19,7 +20,7 @@
 - Design des boutons disabled
 -->
 
-<div x-data="data" x-init="init"  x-cloak>
+<div x-data="data" x-init="init" x-cloak>
 
 <section class="py-8">
 
@@ -202,7 +203,7 @@
                     <div class="flex justify-between gap-6 items-center border rounded-lg p-2 px-3 border-space-100">
                         <div>
                             <p><strong>Hauteur</strong></p>
-                            <p class="text-sm text-space-950/40">entre <span x-text="hauteur_min"></span> et <span x-text="hauteur_max"></span> mm</p><!-- TODO -->
+                            <p class="text-sm text-space-950/40">entre <span x-text="hauteur_min"></span> et <span x-text="hauteur_max"></span> mm</p>
                         </div>
                         <div class="flex items-center bg-space-50 rounded py-1 px-2">
                             <input x-model="hauteur"
@@ -216,7 +217,7 @@
                     <div class="flex justify-between gap-6 items-center border rounded-lg p-2 px-3 border-space-100">
                         <div>
                             <p><strong>Largeur</strong></p>
-                            <p class="text-sm text-space-950/40">entre 392 et 1600 mm</p><!-- TODO -->
+                            <p class="text-sm text-space-950/40">entre <span x-text="largeur_min"></span> et <span x-text="largeur_max"></span> mm</p>
                         </div>
                         <div class="flex items-center bg-space-50 rounded py-1 px-2">
                             <input x-model="largeur"
