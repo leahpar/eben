@@ -143,7 +143,7 @@ class SheetTarifLoader
         return $this->cache->getItem($reference)->get();
     }
 
-    public function getMessage(string $code): string
+    public function getMessage(?string $code = null): string
     {
         $messages = $this->cache->getItem('Messages')->get();
         foreach ($messages as $c => $message) {

@@ -124,4 +124,22 @@ class DevisService
 
     }
 
+    /**
+     * Traduit les textes du projet pour Odoo
+     */
+    public function textesForOdoo(array $projet): array
+    {
+        return [
+            ... array_combine(
+                array_keys($projet),
+                array_map(
+                    fn($p) => $this->sheetTarifLoader->getMessage($p),
+                    $projet
+                )
+            ),
+            // Données à ne pas 'traduire'
+            'hauteur' => (string)$projet['hauteur'],
+            'largeur' => (string)$projet['largeur'],
+        ];
+    }
 }

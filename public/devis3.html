@@ -418,7 +418,7 @@
 
         </div>
 
-        <!-- step 4 -->
+        <!-- step 4 : résumé projet -->
         <div x-show="step===4" class="configurateur py-8 space-y-8">
             <h2 class="font-script text-6xl text-center">Je finalise mon projet</h2>
 
@@ -480,7 +480,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex bg-space-900 text-white items-center gap-6 text-lg rounded-full py-2 px-6 transition-all hover:bg-serria-400" title="Prendre rendez-vous">
+                                <a href="" @click.prevent="step++" class="flex bg-space-900 text-white items-center gap-6 text-lg rounded-full py-2 px-6 transition-all hover:bg-serria-400" title="Prendre rendez-vous">
                                     <div><img src="http://dev.fenetre-eben.fr/wp-content/themes/ebenWP/img/helpdesk.png" alt="Prendre rendez-vous" class="w-10"></div>
                                     <div>Prenez<br><strong>rendez-vous</strong></div>
                                 </a>
@@ -500,6 +500,127 @@
 
         </div>
 
+        <!-- step 5 : calendrier RDV -->
+        <div x-show="step===5" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Discutons par téléphone de votre projet</h2>
+
+            <form>
+                <div class="relative bg-white p-3 rounded-xl grid lg:grid-cols-2 gap-3">
+
+                    <div class="bg-space-50">
+                        <p class="bg-space-100 text-center p-8 uppercase text-2xl font-bold">Vos informations</p>
+                        <div class=" p-6 grid grid-cols-4 gap-6">
+
+                            <div class="col-span-3 flex flex-col justify-between">
+
+                                <input x-model="contact.nom" type="text" name="nom" placeholder="Nom" required>
+                                <input x-model="contact.prenom" type="text" name="prenom" placeholder="Prénom" required>
+                                <input x-model="contact.code_postal" type="text" name="code_postal" placeholder="Code postal" required>
+                                <input x-model="contact.email" type="email" name="email" placeholder="Email" required>
+                                <input x-model="contact.tel" type="tel" name="tel" placeholder="Téléphone" required>
+                                <textarea x-model="contact.message" name="description" placeholder="description sommaire de votre projet"></textarea>
+                                <label>
+                                <input x-model="contact.contact" type="checkbox" required> J'accepte d'être contacté par Eben
+                                </label>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="bg-space-50">
+                        <p class="bg-space-100 text-center p-8 uppercase text-2xl font-bold">Sélectionnez un créneau</p>
+
+                        <div x-show="loading" class="p-6">
+                            <p>Chargement...</p>
+                        </div>
+
+
+                        <div x-show="!loading" class="p-6">
+
+                            <style>
+                                .creneau:disabled {
+                                    color: red;
+                                    cursor: not-allowed;
+                                }
+                                .creneau.selected {
+                                    background-color: blue;
+                                }
+
+                                button:disabled {
+                                    cursor: not-allowed;
+                                }
+                            </style>
+
+                            <div>
+                                <template x-for="jour in calendrier">
+                                <div>
+                                    <span x-text="(new Date(jour.date)).toLocaleDateString('fr-FR', {weekday: 'long'})"></span>
+                                    <span x-text="(new Date(jour.date)).toLocaleDateString('fr-FR', {month: 'short', day: 'numeric'})"></span>
+                                    <ul>
+                                        <template x-for="c in jour.creneaux">
+                                            <li>
+                                            <button x-text="c.heure"
+                                                class="creneau"
+                                                :class="{'selected': creneau === c}"
+                                                :disabled="!c.disponible"
+                                                @click.prevent="creneau = (c.disponible ? c : null)"></button>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                                </template>
+                            </div>
+
+                            <button :disabled="!contactValid || loading"
+                                    @click.prevent="reserverCreneau">
+                                Je valide mon rendez-vous !
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- step 6 : confirmation RDV -->
+        <div x-show="step===6" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Votre rendez-vous est confirmé !</h2>
+
+                <div class="relative bg-white p-3 rounded-xl grid lg:grid-cols-2 gap-3">
+
+                    <div class="bg-space-50">
+                        <b>Rendez-vous le</b>
+                        <h3>
+                            <span x-text="(new Date(creneau ? creneau.datetime : null))
+                            .toLocaleDateString('fr-FR', {weekday: 'long', month: 'long', day: 'numeric'})"></span>
+                            à
+                            <span x-text="(new Date(creneau ? creneau.datetime : null))
+                            .toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})"></span>
+                        </h3>
+
+                        <p>Votre conseiller Eben vous appelle sur ce créneau pour approfondir
+                        votre projet et bien comprendre vos besoins. Vous recevez une offre
+                        commerciale claire et définitive en 24h.</p>
+
+                        <a :href="gCalUrl" target="_blank">Ajouter à mon agenda Google</a>
+                        <br>
+                        <a :href="iCalUrl" target="_blank">Ajouter à mon agenda iCal / Outlook</a>
+
+                    </div>
+
+                    <div class="bg-space-50">
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
     </div>
 
 </section>

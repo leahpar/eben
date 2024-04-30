@@ -8,11 +8,23 @@ async function init() {
         .then(data => {
             this.messages = data.messages
         })
+
+    // Step 5 => (pré)chargement du calendrier
+    this.$watch('step', () => this.step === 5 && this.fetchCalendrier())
+
+    this.$watch('contact', () => this.contactValid =
+        this.contact.nom
+        && this.contact.prenom
+        && this.contact.code_postal
+        && this.contact.email
+        && this.contact.tel
+        && this.contact.contact)
 }
 
 function data() {
     //console.log('data')
     return {
+        loading: false,
         step: 1,
         type: null,
         boisLst: [],
@@ -33,6 +45,36 @@ function data() {
         montant: 0,
         message: null,
         messages: [],
+        calendrier: [],
+        creneau: null,
+        contact: {
+            nom: null,
+            prenom: null,
+            code_postal: null,
+            email: null,
+            tel: null,
+            message: null,
+            contact: false,
+        },
+        contactValid: false,
+        gCalUrl: null,
+        iCalUrl: null,
+
+        getProjet: function() {
+            return {
+                type: this.type,
+                bois: this.bois,
+                hauteur: this.hauteur,
+                largeur: this.largeur,
+                poignee: this.poignee,
+                couleurPoignee: this.couleurPoignee,
+                couleurExt: this.couleurExt,
+            }
+        },
+
+        texte: function(slug) {
+            return this.messages[slug] ?? slug
+        },
 
         // async function fetchDefault() {
         fetchDefault: async function() {
@@ -87,15 +129,7 @@ function data() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    type:        this.type,
-                    bois:        this.bois,
-                    hauteur:     this.hauteur,
-                    largeur:     this.largeur,
-                    poignee:     this.poignee,
-                    couleurPoignee: this.couleurPoignee,
-                    couleurExt:  this.couleurExt,
-                })
+                body: JSON.stringify(this.getProjet())
             })
                 .then(response => response.json())
                 .then(data => {
@@ -107,8 +141,47 @@ function data() {
                 })
         },
 
-        texte: function(slug) {
-            return this.messages[slug] ?? slug
-        }
+        fetchCalendrier: async function() {
+            this.loading = true
+            fetch(url+'/calendrier', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.calendrier = data.calendrier ?? []
+                    this.loading = false
+                })
+        },
+
+        reserverCreneau: async function() {
+            this.loading = true
+            fetch(url+'/rdv', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    projet: this.getProjet(),
+                    creneau: this.creneau,
+                    contact: this.contact,
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.message = data.error ?? null
+                    if (this.message == null) this.step = 6
+                    this.gCalUrl = data.gCalUrl ?? null
+                    this.iCalUrl = data.iCalUrl ?? null
+                    this.loading = false
+                })
+                .catch(err => {
+                    this.message = data.error ?? err
+                    this.loading = false
+                })
+        },
+
     }
 }

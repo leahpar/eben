@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\DevisInput;
+use App\Service\CalendarService;
 use App\Service\DevisService;
+use App\Service\OdooRpcService;
 use App\Service\SheetTarifLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Uid\Uuid;
 
 class DevisController extends AbstractController
 {
@@ -106,5 +109,56 @@ class DevisController extends AbstractController
         }
     }
 
+    #[Route('/calendrier', name: 'calendrier')]
+    public function calendrier(OdooRpcService $odooRpcService)
+    {
+        try {
+            $calendrier = $odooRpcService->getCalendrier();
+            $response = [
+                'calendrier' => $calendrier
+            ];
+            return $this->json($response);
+        }
+        catch (\Exception $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    #[Route('/rdv', name: 'rdv', methods: ['POST'])]
+    public function rdv(
+        Request $request,
+        DevisService $devisService,
+        OdooRpcService $odooRpcService,
+        CalendarService $calendarService,
+        SheetTarifLoader $sheetTarifLoader,
+    ) {
+        try {
+            $data = $request->toArray();
+            $contact = $data['contact'];
+            $projet = $data['projet'];
+            $projet = $devisService->textesForOdoo($projet);
+            $uid = Uuid::v4()->toRfc4122();
+            $odooRpcService->demandeDevis($uid, $projet, $contact);
+
+            $creneau = $data['creneau'];
+            $odooRpcService->reserverCreneau($uid, $creneau);
+
+            $gCalUrl = $calendarService->getGoogleUrl($creneau);
+            $iCalUrl = $calendarService->getIcalUrl($creneau);
+
+            return $this->json([
+                'gCalUrl' => $gCalUrl,
+                'iCalUrl' => $iCalUrl,
+            ]);
+        }
+        catch (\Exception) {
+            //dump($e);
+            return $this->json([
+                'error' => $sheetTarifLoader->getMessage('erreur_rdv'),
+            ], 400);
+        }
+    }
 
 }
