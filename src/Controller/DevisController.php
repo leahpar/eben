@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\DevisInput;
 use App\Service\CalendarService;
 use App\Service\DevisService;
+use App\Service\NotificationService;
 use App\Service\OdooRpcService;
 use App\Service\SheetTarifLoader;
 use Psr\Log\LoggerInterface;
@@ -23,6 +24,17 @@ class DevisController extends AbstractController
     {
         return $this->json([
             'api' => 'ok',
+        ]);
+    }
+
+    #[Route('/devis{id}.html')]
+    public function template(
+        int $id,
+        #[Autowire('%env(API_URL)%')]
+        string $apiUrl
+    ) {
+        return $this->render('devis'.$id.'.html.twig', [
+            'apiUrl' => $apiUrl,
         ]);
     }
 
@@ -157,6 +169,36 @@ class DevisController extends AbstractController
             //dump($e);
             return $this->json([
                 'error' => $sheetTarifLoader->getMessage('erreur_rdv'),
+            ], 400);
+        }
+    }
+
+    #[Route('/projet', name: 'projet', methods: ['POST'])]
+    public function projet(
+        Request $request,
+        DevisService $devisService,
+        SheetTarifLoader $sheetTarifLoader,
+        NotificationService $notificationService
+    ) {
+        try {
+            $data = $request->toArray();
+            $contact = $data['contact'];
+
+            $input = $request->toArray()['projet']??[];
+            $projet = new DevisInput($input);
+            $montant = $devisService->devis($projet);
+
+            $textes = $devisService->textesForOdoo($input);
+            $notificationService->email($textes, $montant, $contact);
+
+            return $this->json([
+                // ...
+            ]);
+        }
+        catch (\Exception $e) {
+            // dump($e);
+            return $this->json([
+                'error' => $sheetTarifLoader->getMessage('erreur_email'),
             ], 400);
         }
     }

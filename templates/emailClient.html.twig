@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Devis pour vos nouvelles fenêtres</title>
+</head>
+<body>
+<p>Bonjour {{ nomComplet }},</p>
+
+<p>Merci d'avoir utilisé notre configurateur en ligne pour estimer vos nouvelles fenêtres. Nous avons bien reçu votre demande et sommes ravis de vous accompagner dans votre projet. Voici un récapitulatif de votre devis :</p>
+
+<h3>Détails de votre demande :</h3>
+<ul>
+    <li>{{ projet['type'] }}</li>
+    <li>L {{ projet['largeur'] }}mm x H {{ projet['hauteur'] }}mm</li>
+    <li>{{ projet['bois'] }}</li>
+    <li>{{ projet['poignee'] }} = {{ projet['couleurPoignee'] }}</li>
+    <li>{{ projet['couleurExt'] }}</li>
+    <li>Double vitrage standard 28 dB</li>
+    <li>Avec l’installation de la fenêtre en dépose totale</li>
+</ul>
+
+<p>Le prix estimé pour votre projet est de : <strong>{{ montant|number_format(0, ',', ' ') }} €</strong></p>
+
+<p>Nous restons à votre disposition pour toute question ou précision. Pour transformer ce devis en commande et concrétiser votre projet, n'hésitez pas à nous contacter dès maintenant :</p>
+
+<ul>
+    <li>Par téléphone au <a href="tel:0189701155">01 89 70 11 55</a></li>
+    <li>Ou via WhatsApp au <a href="tel:0623600454">06 23 60 04 54</a></li>
+</ul>
+
+<p>Notre équipe se tient prête à vous accompagner et à répondre à vos besoins.</p>
+
+<p>Merci de votre confiance et à très bientôt !</p>
+
+<p>Cordialement,<br>
+    L'équipe Eben</p>
+
+<p><a href="https://www.eben.fr">www.eben.fr</a></p>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle demande sur le configurateur Eben</title>
+</head>
+<body>
+
+<p>Une nouvelle demande a été enregistrée via notre configurateur en ligne. Voici les détails :</p>
+
+<h3>Informations du client :</h3>
+<ul>
+    <li><strong>Nom :</strong> {{ contact['nom'] }}</li>
+    <li><strong>Prénom :</strong> {{ contact['prenom'] }}</li>
+    <li><strong>Email :</strong> <a href="mailto:{{ contact['email'] }}">{{ contact['email'] }}</a></li>
+    <li><strong>Téléphone :</strong> <a href="tel:{{ contact['tel'] }}">{{ contact['tel'] }}</a></li>
+    <li><strong>Adresse :</strong> {{ contact['code_postal'] }}</li>
+</ul>
+
+<h3>Détails de la demande :</h3>
+<ul>
+    <li>{{ projet['type'] }}</li>
+    <li>L {{ projet['largeur'] }}mm x H {{ projet['hauteur'] }}mm</li>
+    <li>{{ projet['bois'] }}</li>
+    <li>{{ projet['poignee'] }} = {{ projet['couleurPoignee'] }}</li>
+    <li>{{ projet['couleurExt'] }}</li>
+    <li>Double vitrage standard 28 dB</li>
+    <li>Avec l’installation de la fenêtre en dépose totale</li>
+</ul>
+
+<h3>Estimation du projet :</h3>
+<p><strong>Prix estimé :</strong> {{ montant|number_format(0, ',', ' ') }} €</p>
+
+<p>Merci de contacter ce client dans les plus brefs délais pour suivre cette opportunité. N'oubliez pas de mettre à jour le statut de la demande dans notre CRM après votre premier contact.</p>
+
+<p>Si vous avez des questions ou besoin d'informations supplémentaires, n'hésitez pas à contacter le service support.</p>
+
+<p>Bonne vente !</p>
+
+<p>Cordialement,<br>
+    L'équipe Eben - Service Configurateur</p>
+
+</body>
+</html>

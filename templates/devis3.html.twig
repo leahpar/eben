@@ -4,8 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://eben.fr/wp-content/themes/ebenWP/css/main.css">
 
-<!--    <script defer src="https://api.eben.fr/script.js"></script>-->
-    <script defer src="https://localhost:8030/script.js"></script>
+    <script defer src="{{ apiUrl }}/script.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 </head>
@@ -92,7 +91,7 @@
         <!-- Message -->
         <div x-show="message" x-text="message"></div>
 
-        <!-- step 1 -->
+        <!-- step 1 : type de fenêtes -->
         <div x-show="step===1" class="configurateur py-8 space-y-8">
             <h2 class="font-script text-6xl text-center">Je choisis mon type de fenêtres</h2>
 
@@ -194,7 +193,7 @@
 
         </div>
 
-        <!-- step 2 -->
+        <!-- step 2 : dimensions -->
         <div x-show="step===2" class="configurateur py-8 space-y-8">
             <h2 class="font-script text-6xl text-center">Je renseigne les dimensions de ma fenêtre</h2>
 
@@ -257,7 +256,7 @@
 
         </div>
 
-        <!-- step 3 -->
+        <!-- step 3 : couleurs -->
         <div x-show="step===3" class="configurateur py-8 space-y-8">
             <h2 class="font-script text-6xl text-center">Je choisis les finitions de ma fenêtre</h2>
 

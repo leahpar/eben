@@ -1,0 +1,560 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://eben.fr/wp-content/themes/ebenWP/css/main.css">
+
+    <script defer src="{{ apiUrl }}/script-v2.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+</head>
+<body class="antialiased bg-soapstone-50 text-space-950">
+
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+<!-- TODO:
+- Design du message
+- Design des boutons disabled
+-->
+
+<div x-data="data" x-init="init" x-cloak>
+
+<section class="py-8">
+
+    <div class="container mx-auto max-w-5xl">
+
+        <h1 class="bg-space-950 p-6 text-3xl text-white font-serif text-center">Estimez votre devis de fenêtre bois-aluminium en 3 clics !</h1>
+
+        <!-- tunnel -->
+        <div class="relative bg-space-100 p-6 flex justify-center text-sm">
+            <div class="flex flex-col items-center gap-2">
+                <div class=""
+                    :class="{
+                    'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step>1,
+                    'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===1,
+                    'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step<1
+                    }">
+                    1
+                </div>
+                <p><strong>Type de fenêtres</strong></p>
+            </div>
+            <div class="flex items-center before:w-28 before:border-t before:border-space-200 before:relative before:-top-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class=""
+                        :class="{
+                        'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full' : step>2,
+                        'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===2,
+                        'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step<2
+                        }">
+                        2
+                    </div>
+                    <p><strong>Dimensions</strong></p>
+                </div>
+            </div>
+            <div class="flex items-center before:w-28 before:border-t before:border-space-200 before:relative before:-top-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class=""
+                        :class="{
+                        'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step>3,
+                        'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===3,
+                        'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full' :   step<3
+                        }">
+                        3
+                    </div>
+                    <p><strong>Couleurs & poignée</strong></p>
+                </div>
+            </div>
+            <div class="flex items-center before:w-28 before:border-t before:border-space-200 before:relative before:-top-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class=""
+                        :class="{
+                        'bg-space-950 text-white font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step>4,
+                        'bg-serria-400 text-white font-bold text-2xl w-10 aspect-square flex justify-center items-center rounded-full scale-105' : step===4,
+                        'bg-white text-space-200 font-bold text-xl w-10 aspect-square flex justify-center items-center rounded-full'   : step<4
+                        }">
+                        4
+                    </div>
+                    <p><strong>Je finalise mon projet</strong></p>
+                </div>
+            </div>
+
+            <div x-show="step>=4"
+                 class="absolute -right-16 -bottom-16 bg-space-950 w-40 aspect-square rounded-full flex justify-center items-center border-8 border-soapstone-50 p-3 text-white text-center">
+                <p x-show="step===4" class="text-xl text-white text-center font-bold">Votre Prix<br>à l'étape<br>suivante !</p>
+                <p x-show="step>4">Montant estimé :<br><strong class="text-xl"><span x-text="montantStr"></span> TTC</strong><br>pose incluse</p>
+            </div>
+
+        </div>
+
+        <!-- Message -->
+        <div x-show="message" x-text="message"></div>
+
+        <!-- step 1 : type de fenêtes -->
+        <div x-show="step===1" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je choisis mon type de fenêtres</h2>
+
+            <div class="grid lg:grid-cols-3 gap-4 text-center">
+
+                <div class="bg-white rounded-xl p-6">
+                    <p><strong>Fenêtre</strong></p>
+                    <p class="text-sm">Ouverture à la française et oscillo-battante</p>
+
+                    <div class="flex justify-around mt-8">
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="fob1" value="FOB1" class="hidden">
+                                <label for="fob1" class="flex flex-col items-center gap-3">
+                                <img src="https://eben.fr/wp-content/themes/ebenWP/img/fob1.png" alt="Fenêtre oscillo-battante 1 battant" loading="lazy" class="h-24">
+                                <p>1 battant</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="fob2" value="FOB2" class="hidden">
+                            <label for="fob2" class="flex flex-col items-center gap-3">
+                                <img src="https://eben.fr/wp-content/themes/ebenWP/img/fob2.png" alt="Fenêtre oscillo-battante 2 battants" loading="lazy" class="h-24">
+                                <p>2 battants</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-xl p-6">
+                    <p><strong>Porte-fenêtre</strong></p>
+                    <p class="text-sm">Ouverture à la française uniquement</p>
+
+                    <div class="flex justify-around mt-8">
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="pf2" value="PF2" class="hidden">
+                            <label for="pf2" class="flex flex-col items-center gap-3">
+                                <img src="https://eben.fr/wp-content/themes/ebenWP/img/pf2.png" alt="Porte-fenêtre 2 battants" loading="lazy" class="h-24">
+                                <p>2 battants</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-xl p-6">
+                    <p><strong>Baie coulissante</strong></p>
+                    <p class="text-sm">Ouverture coulissante</p>
+
+                    <div class="flex justify-around mt-8">
+
+                        <div>
+                            <input @change="fetchDefault" x-model="type" type="radio" name="type" id="pfc2" value="PFC2" class="hidden">
+                            <label for="pfc2" class="flex flex-col items-center gap-3">
+                                <img src="https://eben.fr/wp-content/themes/ebenWP/img/bc2.png" alt="Baie coulissante 2 vantaux" loading="lazy" class="h-24">
+                                <p>2 à 4 vantaux</p>
+                                <div class="dot w-5 border-2 border-space-950/30 aspect-square rounded-full flex justify-center items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 fill-white">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-end">
+                <button @click="step++"
+                        :disabled="type===null"
+                        title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">Étape suivante
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"></path>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- step 2 : dimensions -->
+        <div x-show="step===2" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je renseigne les dimensions de ma fenêtre</h2>
+
+            <div class="bg-white rounded-xl p-10 max-w-2xl mx-auto flex flex-col lg:flex-row justify-between gap-10 items-center">
+                <div class="space-y-2">
+                    <div class="flex justify-between gap-6 items-center border rounded-lg p-2 px-3 border-space-100">
+                        <div>
+                            <p><strong>Hauteur</strong></p>
+                            <p class="text-sm text-space-950/40">entre <span x-text="hauteur_min"></span> et <span x-text="hauteur_max"></span> mm</p>
+                        </div>
+                        <div class="flex items-center bg-space-50 rounded py-1 px-2">
+                            <input x-model="hauteur"
+                                   @change.debounce.500ms="fetchMontant"
+                                   class="w-16 bg-transparent text-right"
+                                   type="number"
+                                   name="hauteur">
+                            <p class="text-sm">mm</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between gap-6 items-center border rounded-lg p-2 px-3 border-space-100">
+                        <div>
+                            <p><strong>Largeur</strong></p>
+                            <p class="text-sm text-space-950/40">entre <span x-text="largeur_min"></span> et <span x-text="largeur_max"></span> mm</p>
+                        </div>
+                        <div class="flex items-center bg-space-50 rounded py-1 px-2">
+                            <input x-model="largeur"
+                                   @change.debounce.500ms="fetchMontant"
+                                   class="w-16 bg-transparent text-right"
+                                   type="number"
+                                   name="largeur">
+                            <p class="text-sm">mm</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://eben.fr/wp-content/themes/ebenWP/img/dimensions.png" alt="Dimensions de votre fenêtre sur-mesure" loading="lazy">
+                </div>
+            </div>
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path>
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+                    <button @click="step++"
+                            :disabled="montant===0"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">Étape suivante
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"></path>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- step 3 : couleurs -->
+        <div x-show="step===3" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je choisis les finitions de ma fenêtre</h2>
+
+            <div class="bg-white rounded-xl p-2 max-w-5xl mx-auto">
+
+                <h3 class="bg-soapstone-50 p-2 text-center uppercase font-bold text-lg rounded">La finition intérieure</h3>
+
+                <div class="grid grid-cols-4">
+
+                    <div class="relative">
+                        <!-- fond -->
+                        <img src="https://eben.fr/wp-content/themes/ebenWP/img/spacer.png"
+                             alt="Fenêtre bois-alu en pin sur-mesure">
+                        <!-- fenetre -->
+                        <img :src="url+'/img/windows/'+bois+'_int.png'"
+                             alt="Fenêtre bois-alu en pin sur-mesure"
+                             class="absolute top-0 left-0 z-10">
+                        <!-- poignee -->
+                        <img :src="url+'/img/handles-zoom/'+poignee+'_'+couleurPoignee+'.png'"
+                             alt="Poignée moderne fenêtre sur-mesure"
+                             class="absolute top-0 left-0 z-20">
+                    </div>
+
+                    <div class="col-span-3 pr-3 divide-y divide-space-100">
+                        <div class="py-3">
+                            <p class="uppercase">La finition bois</p>
+
+                            <ul class="flex justify-center gap-3 text-sm py-3 configurateur-options">
+                                <template x-for="b in boisLst">
+                                    <li class="flex">
+                                        <input x-model="bois"
+                                               type="radio"
+                                               name="bois"
+                                               class="hidden"
+                                               @change="fetchMontant"
+                                               :value="b"
+                                               :id="b">
+                                        <label :for="b">
+                                            <img :src="url+'/img/colors/'+b+'_90.png'"
+                                                 class="w-16 aspect-square rounded-full object-cover"
+                                                 :alt="texte(b)">
+                                            <p class="text-center" x-text="texte(b)"></p>
+                                        </label>
+                                    </li>
+                                </template>
+                            </ul>
+
+                            <p class="uppercase">Les poignées</p>
+
+                            <ul class="flex justify-center gap-3 text-sm py-3 configurateur-options">
+                                <template x-for="p in poigneeLst">
+                                    <div>
+                                        <input x-model="poignee"
+                                               type="radio"
+                                               name="poignee"
+                                               class="hidden"
+                                               @change="fetchMontant"
+                                               :value="p"
+                                               :id="p">
+                                        <label :for="p">
+                                            <img :src="url+'/img/handles-category/'+p+'_blanc_mobile.png'"
+                                                 class="w-16 aspect-square rounded-full object-cover"
+                                                 :alt="texte(p)">
+                                            <p class="text-center" x-text="texte(p)"></p>
+                                        </label>
+                                    </div>
+                                </template>
+                            </ul>
+
+                            <ul class="flex justify-center gap-3 text-sm py-3 configurateur-options">
+                                <template x-for="(p,c) in couleurPoigneeLst[poignee]">
+                                    <li x-show="p>=0" class="flex">
+                                        <input x-model="couleurPoignee"
+                                               type="radio"
+                                               name="couleurPoignee"
+                                               class="hidden"
+                                               @change="fetchMontant"
+                                               :value="c"
+                                               :id="c">
+                                        <label :for="c">
+                                            <img :src="url+'/img/handles-colors/'+c+'.png'"
+                                                 class="w-16 aspect-square rounded-full object-cover"
+                                                 :alt="texte(c)">
+                                            <p class="text-center" x-text="texte(c)"></p>
+                                        </label>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl p-2 max-w-5xl mx-auto space-y-2">
+
+                <h3 class="bg-soapstone-50 p-2 text-center uppercase font-bold text-lg rounded">La couleur aluminium extérieure</h3>
+
+                <div class="grid grid-cols-4 items-center">
+
+                    <div class="relative">
+                        <!-- fenetre ext -->
+                        <img :src="url+'/img/windows/'+couleurExt+'_ext.png'"
+                             alt="Fenêtre bois-alu en pin sur-mesure">
+                    </div>
+
+                    <div class="col-span-3 pr-3 divide-y divide-space-100">
+
+                        <div class="py-3">
+                            <p class=" text-lg font-bold">La couleur aluminium extérieure</p>
+
+                            <ul class="flex justify-center gap-3 text-sm py-3 configurateur-options">
+                                <template x-for="c in couleurExtLst">
+                                    <div>
+                                        <input x-model="couleurExt"
+                                               type="radio"
+                                               name="couleurExt"
+                                               class="hidden"
+                                               :value="c"
+                                               :id="c">
+                                        <label :for="c">
+                                            <img :src="url+'/img/colors/'+c+'_90.png'"
+                                                 class="w-16 aspect-square rounded-full object-cover"
+                                                 :alt="texte(c)">
+                                            <p class="text-center" x-text="texte(c)"></p>
+                                        </label>
+                                    </div>
+                                </template>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+                    <button @click="step++"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">
+                        Étape suivante
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- step 4 : contact -->
+        <div x-show="step===4" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">bla bla bla</h2>
+
+            <form>
+                <div class="relative bg-white p-3 rounded-xl grid lg:grid-cols-2 gap-3">
+
+                    <div class="bg-space-50">
+                        <p class="bg-space-100 text-center p-8 uppercase text-2xl font-bold">Vos informations</p>
+                        <div class=" p-6 grid grid-cols-4 gap-6">
+
+                            <div class="col-span-3 flex flex-col justify-between">
+
+                                <input x-model="contact.nom" type="text" name="nom" placeholder="Nom" required>
+                                <input x-model="contact.prenom" type="text" name="prenom" placeholder="Prénom" required>
+                                <input x-model="contact.code_postal" type="text" name="code_postal" placeholder="Code postal" required>
+                                <input x-model="contact.email" type="email" name="email" placeholder="Email" required>
+                                <input x-model="contact.tel" type="tel" name="tel" placeholder="Téléphone" required>
+                                <textarea x-model="contact.message" name="description" placeholder="description sommaire de votre projet"></textarea>
+                                <label>
+                                    <input x-model="contact.contact" type="checkbox" required> J'accepte d'être contacté par Eben
+                                </label>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+                    <button @click.prevent="validerProjet"
+                            :disabled="!contactValid || loading"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">
+                        Je valide mon projet !
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- step 5 : résumé projet -->
+        <div x-show="step===5" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">Je finalise mon projet</h2>
+
+            <div class="relative bg-white p-3 rounded-xl grid lg:grid-cols-2 gap-3">
+
+                <div class="bg-space-50">
+                    <p class="bg-space-100 text-center p-8 uppercase text-2xl font-bold">Votre estimation</p>
+                    <div class=" p-6 grid grid-cols-4 gap-6">
+
+                        <div class="space-y-3">
+                            <div class="relative">
+                                <!-- fond -->
+                                <img src="https://eben.fr/wp-content/themes/ebenWP/img/spacer.png"
+                                     alt="Fenêtre bois-alu en pin sur-mesure">
+                                <!-- fenetre -->
+                                <img :src="url+'/img/windows/'+bois+'_int.png'"
+                                     alt="Fenêtre bois-alu en pin sur-mesure"
+                                     class="absolute top-0 left-0 z-10">
+                                <!-- poignee -->
+                                <img :src="url+'/img/handles-zoom/'+poignee+'_'+couleurPoignee+'.png'"
+                                     alt="Poignée moderne fenêtre sur-mesure"
+                                     class="absolute top-0 left-0 z-20">
+                            </div>
+                            <div class="relative">
+                                <!-- fenetre ext -->
+                                <img :src="url+'/img/windows/'+couleurExt+'_ext.png'"
+                                     alt="Fenêtre bois-alu en pin sur-mesure">
+                            </div>
+                        </div>
+
+                        <div class="col-span-3 flex flex-col justify-between">
+
+                            <ul class="divide-y divide-space-100 font-bold">
+                                <li class="py-2" x-text="texte(type)"></li>
+                                <li class="py-2">L <span x-text="largeur"></span> mm x H <span x-text="hauteur"></span> mm</li>
+                                <li class="py-2" x-text="texte(bois)"></li>
+                                <li class="py-2"><span x-text="texte(poignee)"></span> - <span x-text="texte(couleurPoignee)"></span></li>
+                                <li class="py-2" x-text="texte(couleurExt)"></li>
+                                <li class="py-2">Double vitrage standard 28 dB</li>
+                                <li class="py-2">Avec l’installation de la fenêtre en dépose totale</li>
+                            </ul>
+
+                            <p class="text-right"><a href="" @click.prevent="step--" title="Modifier mon estimation" class="underline">Modifier mon estimation</a></p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="bg-space-50">
+                    <p class="bg-space-100 text-center p-8 uppercase text-2xl font-bold">Recevez rapidement un devis précis</p>
+                    <div class=" p-6">
+
+                        <ul class="mx-auto max-w-xs space-y-2">
+                            <li>
+                                <a href="https://wa.me/33608711018" class="flex bg-space-900 text-white items-center gap-6 text-lg rounded-full py-2 px-6 transition-all hover:bg-serria-400" title="Discuter sur whatsapp" target="_blank">
+                                    <div><img src="https://eben.fr/wp-content/themes/ebenWP/img/picto-whatsapp.svg" alt="Nous contacter sur Whatsapp" class="w-10"></div>
+                                    <div>Échangeons sur<br><strong>Whatsapp</strong></div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="tel:0608711018" class="flex bg-space-900 text-white items-center gap-6 text-lg rounded-full py-2 px-6 transition-all hover:bg-serria-400" title="Appelez-nous" target="_blank">
+                                    <div><img src="https://eben.fr/wp-content/themes/ebenWP/img/picto-telephone-onde.svg" alt="Appelez-nous !" class="w-10"></div>
+                                    <div>Appelez-nous !<br><strong>06 08 71 10 18</strong></div>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+</body>
+</html>
