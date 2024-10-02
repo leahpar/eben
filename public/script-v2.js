@@ -1,4 +1,5 @@
 const url = new URL(document.currentScript.src).origin
+const root = document.querySelector('[x-data]');
 
 async function init() {
     //console.log('init')
@@ -12,13 +13,12 @@ async function init() {
     // Step 5 => (pré)chargement du calendrier
     //this.$watch('step', () => this.step === 5 && this.fetchCalendrier())
 
+    this.$watch('step', () => root.scrollIntoView({ behavior: 'smooth' }))
+
     this.$watch('contact', () => this.contactValid =
         this.contact.nom
-        && this.contact.prenom
-        && this.contact.code_postal
         && this.contact.email
-        && this.contact.tel
-        && this.contact.contact)
+        && this.contact.tel)
 }
 
 function data() {
