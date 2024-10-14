@@ -1,4 +1,5 @@
-const url = new URL(document.currentScript.src).origin
+const url = new URL(document.currentScript.src).origin;
+const track = document.currentScript.dataset.track;
 const root = document.querySelector('[x-data]');
 
 async function init() {
@@ -201,12 +202,15 @@ function data() {
                 .then(data => {
                     this.message = data.error ?? null
                     if (this.message == null) this.step++
+                    if (track) fetch(track)
                     this.loading = false
                 })
                 .catch(err => {
                     this.message = data.error ?? err
                     this.loading = false
                 })
+
+
         },
 
     }
