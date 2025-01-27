@@ -14,7 +14,7 @@
     <li><strong>Prénom :</strong> {{ contact['prenom'] }}</li>
     <li><strong>Email :</strong> <a href="mailto:{{ contact['email'] }}">{{ contact['email'] }}</a></li>
     <li><strong>Téléphone :</strong> <a href="tel:{{ contact['tel'] }}">{{ contact['tel'] }}</a></li>
-    <li><strong>Adresse :</strong> {{ contact['code_postal'] }}</li>
+    <li><strong>Code postal :</strong> {{ contact['code_postal'] }}</li>
 </ul>
 
 <h3>Détails de la demande :</h3>
@@ -28,15 +28,10 @@
     <li>Avec l’installation de la fenêtre en dépose totale</li>
 </ul>
 
-<h3>Estimation du projet :</h3>
-<p><strong>Prix estimé :</strong> {{ montant|number_format(0, ',', ' ') }} €</p>
+<h3>Estimation du projet : {{ montant|number_format(0, ',', ' ') }} €</h3>
 
-<p>Merci de contacter ce client dans les plus brefs délais pour suivre cette opportunité. N'oubliez pas de mettre à jour le statut de la demande dans notre CRM après votre premier contact.</p>
-
-<p>Si vous avez des questions ou besoin d'informations supplémentaires, n'hésitez pas à contacter le service support.</p>
-
+<p>Merci de contacter ce client dans les plus brefs délais pour suivre cette opportunité.</p>
 <p>Bonne vente !</p>
-
 <p>Cordialement,<br>
     L'équipe Eben - Service Configurateur</p>
 
