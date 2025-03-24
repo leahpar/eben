@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://eben.fr/wp-content/themes/ebenWP/css/main.css">
 
-    <script defer src="{{ apiUrl }}/script-v2.js" data-track="/track"></script>
+    <script defer src="{{ apiUrl }}/script-v3.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 </head>
@@ -80,10 +80,10 @@
                 </div>
             </div>
 
-            <div x-show="step>=4"
+            <div x-show="step>=5"
                  class="absolute -right-16 -bottom-16 bg-space-950 w-40 aspect-square rounded-full flex justify-center items-center border-8 border-soapstone-50 p-3 text-white text-center">
-                <p x-show="step===4" class="text-xl text-white text-center font-bold">Votre Prix<br>à l'étape<br>suivante !</p>
-                <p x-show="step>4">Montant estimé :<br><strong class="text-xl"><span x-text="montantStr"></span> TTC</strong><br>pose incluse</p>
+                <p x-show="step===5" class="text-xl text-white text-center font-bold">Votre Prix<br>à l'étape<br>suivante !</p>
+                <p x-show="step>5">Montant estimé :<br><strong class="text-xl"><span x-text="montantStr"></span> TTC</strong><br>pose incluse</p>
             </div>
 
         </div>
@@ -460,7 +460,7 @@
                         Étape précédente</button>
                 </div>
                 <div>
-                    <button @click.prevent="validerProjet"
+                    <button @click.prevent="checkSMS"
                             :disabled="!contactValid || loading"
                             title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">
                         Je valide mon projet !
@@ -474,8 +474,57 @@
 
         </div>
 
-        <!-- step 5 : résumé projet -->
+        <!-- step 5 : validation SMS -->
         <div x-show="step===5" class="configurateur py-8 space-y-8">
+            <h2 class="font-script text-6xl text-center">bla bla bla</h2>
+
+            <form>
+                <div class="relative bg-white p-3 rounded-xl grid lg:grid-cols-2 gap-3">
+
+                    <div class="bg-space-50">
+                        <p class="bg-space-100 text-center p-8 uppercase text-2xl font-bold">Code SMS</p>
+                        <div class=" p-6 grid grid-cols-4 gap-6">
+
+                            <div class="col-span-3 flex flex-col justify-between">
+
+                                <input x-model="codeSms" type="text" name="codeSms" placeholder="1234" required>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <div class="flex justify-between">
+                <div>
+                    <button @click="step--"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 text-space-950 rounded-full inline-flex gap-2 items-center transition-all hover:bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                        </svg>
+                        Étape précédente</button>
+                </div>
+                <div>
+                    <button @click.prevent="validerProjet"
+                            :disabled="!codeSmsValid || loading"
+                            title="Estimer votre devis de fenêtre à Paris" class="group px-5 py-4 bg-space-950 text-white rounded-full inline-flex gap-2 items-center transition-all hover:bg-serria-400">
+                        Je valide mon projet !
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition-all group-hover:translate-x-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- step 6 : résumé projet -->
+        <div x-show="step===6" class="configurateur py-8 space-y-8">
             <h2 class="font-script text-6xl text-center">Je finalise mon projet</h2>
 
             <div class="relative bg-white p-3 rounded-xl grid lg:grid-cols-2 gap-3">
@@ -517,7 +566,7 @@
                                 <li class="py-2">Avec l’installation de la fenêtre en dépose totale</li>
                             </ul>
 
-                            <p class="text-right"><a href="" @click.prevent="step--" title="Modifier mon estimation" class="underline">Modifier mon estimation</a></p>
+                            <p class="text-right"><a href="" @click.prevent="step=step-3" title="Modifier mon estimation" class="underline">Modifier mon estimation</a></p>
 
                         </div>
 

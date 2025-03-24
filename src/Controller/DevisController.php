@@ -8,6 +8,7 @@ use App\Service\DevisService;
 use App\Service\NotificationService;
 use App\Service\OdooRpcService;
 use App\Service\SheetTarifLoader;
+use App\Service\SmsService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -173,6 +174,32 @@ class DevisController extends AbstractController
         }
     }
 
+    #[Route('/checkSms', name: 'check_sms', methods: ['POST'])]
+    public function checkSms(
+        Request $request,
+        SheetTarifLoader $sheetTarifLoader,
+        NotificationService $notificationService,
+    ) {
+        try {
+            $projet  = $request->toArray()['projet']??[];
+            $contact = $request->toArray()['contact']??[];
+            $code = $notificationService->generateCode($projet, $contact);
+
+            $message = "Votre code de vérification Eben est : $code - Il vous permettra d'accéder à votre devis en ligne.";
+            $notificationService->sms($message, $contact['tel']);
+
+            return $this->json([
+                'codeSms' => $code,
+            ]);
+        }
+        catch (\Exception $e) {
+            // dump($e);
+            return $this->json([
+                'error' => $sheetTarifLoader->getMessage('erreur_sms'),
+            ], 400);
+        }
+    }
+
     #[Route('/projet', name: 'projet', methods: ['POST'])]
     public function projet(
         Request $request,
@@ -190,6 +217,7 @@ class DevisController extends AbstractController
 
             $textes = $devisService->textesForOdoo($input);
             $notificationService->email($textes, $montant, $contact);
+            //$sheetService->save($projet, $montant, $contact);
 
             return $this->json([
                 // ...
