@@ -26,7 +26,6 @@ class GoogleApiService
                 \Google_Service_Sheets::SPREADSHEETS,
             ]);
             $client->setAccessType('offline');
-            // credentials.json is the key file we downloaded while setting up our Google Sheets API
             $client->setAuthConfig($this->projectDir . '/var/credentials.json');
             $this->client = $client;
         }
@@ -37,7 +36,6 @@ class GoogleApiService
     {
         return match ($type) {
             'sheets' => $this->getSheetService(),
-            //'drive' => $this->getDriveService(),
             default => throw new \Exception("Unknown service $type")
         };
     }

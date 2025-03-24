@@ -7,6 +7,7 @@ use App\Service\CalendarService;
 use App\Service\DevisService;
 use App\Service\NotificationService;
 use App\Service\OdooRpcService;
+use App\Service\SheetProspectsService;
 use App\Service\SheetTarifLoader;
 use App\Service\SmsService;
 use Psr\Log\LoggerInterface;
@@ -205,7 +206,8 @@ class DevisController extends AbstractController
         Request $request,
         DevisService $devisService,
         SheetTarifLoader $sheetTarifLoader,
-        NotificationService $notificationService
+        NotificationService $notificationService,
+        SheetProspectsService $prospectsService,
     ) {
         try {
             $data = $request->toArray();
@@ -216,6 +218,13 @@ class DevisController extends AbstractController
             $montant = $devisService->devis($projet);
 
             $textes = $devisService->textesForOdoo($input);
+            $prospectsService->saveProspect([
+                'email' => $contact['email'],
+                'nomComplet' => $contact['prenom'] . " " . $contact['nom'],
+                'prenom' => $contact['prenom'],
+                'nom' => $contact['nom'],
+                'source' => $contact['source'],
+            ]);
             $notificationService->email($textes, $montant, $contact);
             //$sheetService->save($projet, $montant, $contact);
 

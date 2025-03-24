@@ -25,7 +25,7 @@ class TestCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $this->notificationService->sms("test", "+33626661067");
+        $this->notificationService->sms("pwet?", "06 50 76 83 67");
 
         $io->success("OK");
         return Command::SUCCESS;
