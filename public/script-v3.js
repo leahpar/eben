@@ -60,9 +60,9 @@ function data() {
         },
         contactValid: false,
 
-        codeSms: null,
-        codeSmsCheck: null,
-        codeSmsValid: false,
+        codeSms: urlParams.get('codesms'),
+        codeSmsCheck: urlParams.get('codesms'),
+        codeSmsValid: urlParams.has('codesms'),
 
         gCalUrl: null,
         iCalUrl: null,
