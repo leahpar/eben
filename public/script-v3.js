@@ -64,6 +64,8 @@ function data() {
         codeSmsCheck: urlParams.get('codesms'),
         codeSmsValid: urlParams.has('codesms'),
 
+        debug: urlParams.has('codesms'),
+
         gCalUrl: null,
         iCalUrl: null,
 
@@ -179,6 +181,12 @@ function data() {
         },
 
         validerProjet: async function() {
+
+            if (this.debug) {
+                this.step++
+                return
+            }
+
             this.loading = true
             fetch(url+'/projet', {
                 method: 'POST',
