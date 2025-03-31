@@ -60,7 +60,7 @@ class NotificationService
         $tel = preg_replace('#^0#', '+33', $tel);
 
         $sms = new SmsMessage($tel, $message);
-//        $res = $this->texter->send($sms);
+        $res = $this->texter->send($sms);
         //dump($res);
     }
 
