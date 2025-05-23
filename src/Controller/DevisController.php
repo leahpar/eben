@@ -219,6 +219,7 @@ class DevisController extends AbstractController
 
             $textes = $devisService->textesForOdoo($input);
             $prospectsService->saveProspect([
+                'date' => date('Y-m-d H:i:s'),
                 'email' => $contact['email'],
                 'nomComplet' => $contact['prenom'] . " " . $contact['nom'],
                 'prenom' => $contact['prenom'],
